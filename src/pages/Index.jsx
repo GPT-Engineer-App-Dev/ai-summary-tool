@@ -5,6 +5,7 @@ import { create } from "lib/openai";
 const Index = () => {
   const [text, setText] = useState("");
   const [summary, setSummary] = useState("");
+  const [systemPrompt, setSystemPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleTextChange = (event) => {
@@ -16,7 +17,10 @@ const Index = () => {
     setIsLoading(true);
     try {
       const response = await create({
-        messages: [{ role: "user", content: text }],
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: text },
+        ],
         model: "gpt-3.5-turbo",
         instructions: "Provide a summary",
         temperature: 0.7,
@@ -37,6 +41,7 @@ const Index = () => {
           Text Summarizer
         </Text>
         <Textarea placeholder="Enter your text here..." value={text} onChange={handleTextChange} size="lg" height="200px" />
+        <Textarea placeholder="Enter system prompt here..." value={systemPrompt} onChange={(e) => setSystemPrompt(e.target.value)} size="lg" height="100px" />
         <Button onClick={handleSummarize} isLoading={isLoading} colorScheme="blue" size="lg">
           Summarize
         </Button>
